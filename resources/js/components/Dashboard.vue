@@ -7,6 +7,7 @@
                         <h3>Dashboard</h3>
                     </div>
                     <Stats :user="user"/>
+                    <Messages :latest="latestMessages"/>
                     <Contacts :users="users"
                               :user="user"/>
                 </div>
@@ -17,16 +18,19 @@
 <script>
 import Contacts from "./Contacts.vue";
 import Stats from "./Stats.vue";
+import Messages from "./Messages.vue";
 export default {
     name:"dashboard",
     components: {
         Contacts,
-        Stats
+        Stats,
+        Messages
     },
     data() {
         return {
             user: {},
             users: [],
+            latestMessages: {}
         }
     },
     computed: {
@@ -36,13 +40,14 @@ export default {
         getAllUsers() {
             return this.$store.getters['user/getUsers'];
         },
-        hasData() {
-            return (this.user && this.user.contacts && this.user.contacts.length) && this.users.length;
+        getLatestMessages() {
+            return this.$store.getters['chat/getLatestMessage'];
         }
     },
 
     mounted() {
         this.getData();
+        this.fetchUnreadMessage();
     },
 
     watch: {
@@ -57,35 +62,57 @@ export default {
         getAllUsers: {
             handler(data) {
                 if (data) {
-                    this.users = data.filter((el) =>{
-                        if (el.id !== this.user.id) {
-                            return el;
-                        }
-                    });
+                    this.renderData(data);
                 }
             },
             deep: true
         },
-        hasData(data) {
-            if (data) {
-                this.renderData();
-            }
+        getLatestMessages: {
+            handler(data) {
+                if (data) {
+                    this.latestMessages = data;
+                }
+            },
+            deep: true
         }
     },
 
     methods: {
-        getData() {
-            this.$store.dispatch('auth/signIn');
-            this.$store.dispatch('user/getUsers');
-        },
-        renderData() {
+        renderData(data) {
             let ids = this.user.contacts.map((el) => el.id);
-            this.users = this.users.filter((el) => {
+            this.users = data.filter((el) => {
                 if (!ids.includes(el.id)) {
                     return el;
                 }
             });
+        },
+        getData() {
+            this.$store.dispatch('auth/signIn');
+            this.$store.dispatch('user/getUsers');
+        },
+        async fetchUnreadMessage() {
+            await this.$store.dispatch('chat/fetchLatestMessage', this.getUser.data.id);
         }
     },
 }
 </script>
+<style lang="scss">
+    .bold {
+        font-weight: 600;
+    }
+    .btn {
+        margin-right: 10px
+    }
+    .card-subtitle {
+        margin-bottom: 20px;
+    }
+    .card-title {
+        font-size: 18px;
+    }
+    .card-content {
+        border-top: 1px solid grey;
+        border-bottom: 1px solid grey;
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+</style>

@@ -15,7 +15,7 @@
                     <div class="d-flex">
                         <ul class="navbar-nav">
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-if="user">
                                     {{ user.name }}
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdownMenuLink">
@@ -37,10 +37,26 @@ export default {
     name:"default-layout",
     data(){
         return {
-            user:this.$store.state.auth.user.data
+            user: {}
+        }
+    },
+    computed: {
+        getUser() {
+            return this.$store.getters['auth/getUser'];
         }
     },
     mounted() {
+        this.$store.dispatch('auth/signIn');
+    },
+    watch: {
+        getUser: {
+            handler(data) {
+                if (data) {
+                    this.user = data.data;
+                }
+            },
+            deep: true
+        },
     },
     methods:{
         async logout(){

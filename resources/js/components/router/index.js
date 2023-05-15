@@ -8,6 +8,8 @@ const ForgotPassword = () => import('../../components/pages/auth/ForgotPassword.
 const ResetPassword = () => import('../../components/pages/auth/ResetPassword.vue');
 const VerifyEmail = () => import('../../components/pages/auth/VerifyEmail.vue');
 const Dashboard = () => import('../../components/Dashboard.vue');
+const Chat = () => import('../../components/Chat.vue');
+
 const routes = [
     {
         name: "login",
@@ -67,6 +69,14 @@ const routes = [
                 component: Dashboard,
                 meta: {
                     title: `Dashboard`
+                }
+            },
+            {
+                name: "chat",
+                path: '/chat/:id',
+                component: Chat,
+                meta: {
+                    title: `Chat`
                 }
             }
         ]

@@ -57,7 +57,6 @@ export default {
 
     computed: {
         formError() {
-            console.log( this.$store.getters['auth/getValidationErrors']);
             return this.$store.getters['auth/getValidationErrors'];
         }
     },

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\User\UserRepository;
-use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -28,7 +27,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        return new UserResource(auth()->user());
+        try {
+            return $this->userRepository->getUser(auth()->user());
+        } catch (\Exception $e) {
+            return response()->json(['msg' => $e->getMessage()]);
+        }
     }
 
     /**
@@ -39,9 +42,7 @@ class UserController extends Controller
     public function getAll()
     {
         try {
-
-            $users = $this->userRepository->all();
-            return response()->json(['users' => $users]);
+            return $this->userRepository->all();
         } catch (\Exception $e) {
             return response()->json(['msg' => $e->getMessage()]);
         }

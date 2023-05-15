@@ -3,6 +3,7 @@
 namespace App\Repositories\User;
 
 use App\Repositories\BaseRepository;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 
 class UserRepository extends BaseRepository {
@@ -32,4 +33,15 @@ class UserRepository extends BaseRepository {
         $model->contacts()->where('contact_id', $data['contact_id'])->delete();
         return $model;
     }
+
+    public function getUser($user)
+    {
+        return new UserResource($user);
+    }
+
+    public function all()
+    {
+        return $this->model->where('id', '!=', auth()->id())->get();
+    }
+
 }

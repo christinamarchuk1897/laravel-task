@@ -32,7 +32,7 @@ export default {
         await this.$axios.get('/user').then((res) =>{
             commit('setUser', { ...res.data });
             commit('setAauthenticated', true);
-            this.$router.push('dashboard');
+            this.$router.push('/dashboard');
         }).catch((response)=>{
             commit('setUser', {});
             commit('setAauthenticated',false);
