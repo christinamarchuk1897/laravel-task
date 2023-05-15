@@ -20,9 +20,6 @@ return new class extends Migration
             $table->text('message');
             $table->boolean('read')->default(false);
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('contact_id')->references('id')->on('users');
         });
     }
 
